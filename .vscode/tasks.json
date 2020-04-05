@@ -19,8 +19,8 @@
           "..",
           "-G",
           "MinGW Makefiles",
-          "-DCMAKE_LIBRARY_PATH='C:/MinGW/SDLx64/lib/;C:/MinGW/glew/lib/Release/x64;C:/MinGW/SDL_image/lib'",
-          "-DCMAKE_INCLUDE_PATH='C:/MinGW/SDLx64/include/SDL2;C:/MinGW/glew/include/;C:/MinGW/glm;C:/MinGW/SDL_image/include/SDL2'"
+          "-DCMAKE_LIBRARY_PATH='C:/MinGW/boost/lib/'",
+          "-DCMAKE_INCLUDE_PATH='C:/MinGW/boost/include/boost-1_72'"
         ]
       }
     },

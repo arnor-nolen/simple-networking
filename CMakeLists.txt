@@ -18,7 +18,7 @@ add_compile_options(-g)
 # Set platform-specific stuff
 if (WIN32)
     # Add "-mwindows" flag for hiding the console
-    set(EXTRA_LINKER_FLAGS mingw32)
+    set(EXTRA_LINKER_FLAGS mingw32 wsock32)
 elseif(APPLE)
     set(EXTRA_LINKER_FLAGS "")
 else()
