@@ -1,0 +1,47 @@
+{
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "cmake",
+      "options": {
+        "cwd": "${workspaceRoot}/build"
+      },
+      "command": "cmake",
+      "osx": {
+        "args": [
+          "..",
+          "-DCMAKE_LIBRARY_PATH='/usr/local/Cellar/boost/1.72.0_1/lib'",
+          "-DCMAKE_INCLUDE_PATH='/usr/local/Cellar/boost/1.72.0_1/include'"
+        ]
+      },
+      "windows": {
+        "args": [
+          "..",
+          "-G",
+          "MinGW Makefiles",
+          "-DCMAKE_LIBRARY_PATH='C:/MinGW/SDLx64/lib/;C:/MinGW/glew/lib/Release/x64;C:/MinGW/SDL_image/lib'",
+          "-DCMAKE_INCLUDE_PATH='C:/MinGW/SDLx64/include/SDL2;C:/MinGW/glew/include/;C:/MinGW/glm;C:/MinGW/SDL_image/include/SDL2'"
+        ]
+      }
+    },
+    {
+      "type": "shell",
+      "label": "make",
+      "options": {
+        "cwd": "${workspaceRoot}/build"
+      },
+      "osx": {
+        "command": "make"
+      },
+      "windows": {
+        "command": "mingw32-make"
+      },
+      "dependsOn": ["cmake"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ],
+  "version": "2.0.0"
+}
