@@ -18,14 +18,17 @@ add_compile_options(-g)
 # Set platform-specific stuff
 if (WIN32)
     # Add "-mwindows" flag for hiding the console
-    set(EXTRA_LINKER_FLAGS mingw32 wsock32)
+    set(EXTRA_LINKER_FLAGS mingw32 ws2_32 mswsock)
 elseif(APPLE)
     set(EXTRA_LINKER_FLAGS "")
 else()
     message(FATAL_ERROR "Currently, only WIN32 and APPLE architectures are officially supported. You need to link your libraries manually by editing CMakeLists.txt")
 endif()
 
-add_executable (${PROJECT_NAME} src/main.cpp)
+add_executable (server src/server.cpp)
+add_executable (client src/client.cpp)
 # Use c++17 standard
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-target_link_libraries(${PROJECT_NAME} ${EXTRA_LINKER_FLAGS})
+target_compile_features(server PUBLIC cxx_std_17)
+target_link_libraries(server ${EXTRA_LINKER_FLAGS})
+target_compile_features(client PUBLIC cxx_std_17)
+target_link_libraries(client ${EXTRA_LINKER_FLAGS})

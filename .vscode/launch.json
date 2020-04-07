@@ -5,9 +5,9 @@
       "name": "debug",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/simple-networking",
+      "program": "${workspaceFolder}/bin/client",
       "terminal": "external",
-      "args": [],
+      "args": ["localhost", "13"],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "make"
     }
