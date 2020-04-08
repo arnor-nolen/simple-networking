@@ -2,14 +2,14 @@
 #include <boost/asio.hpp>
 #include <iostream>
 
+namespace asio = boost::asio;
+using tcp = asio::ip::tcp;
+using error_code = boost::system::error_code;
+
 int main(int argc, char *argv[]) {
   try {
     const std::string host = "localhost";
     const short port = 13;
-
-    namespace asio = boost::asio;
-    using tcp = asio::ip::tcp;
-    using error_code = boost::system::error_code;
 
     asio::io_context ioc;
     tcp::resolver resolver(ioc);

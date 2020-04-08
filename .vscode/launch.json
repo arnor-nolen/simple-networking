@@ -7,7 +7,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/bin/client",
       "terminal": "external",
-      "args": ["localhost", "13"],
+      "args": [],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "make"
     }
