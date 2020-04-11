@@ -1,6 +1,8 @@
 #include <array>
 #include <boost/asio.hpp>
+#include <boost/system/error_code.hpp>
 #include <iostream>
+#include <string>
 
 namespace asio = boost::asio;
 using tcp = asio::ip::tcp;
@@ -8,6 +10,7 @@ using error_code = boost::system::error_code;
 
 int main(int argc, char *argv[]) {
   try {
+
     const std::string host = "localhost";
     const short port = 13;
 
@@ -24,7 +27,7 @@ int main(int argc, char *argv[]) {
 
       if (error == boost::asio::error::eof)
         break; // Connection closed cleanly by peer.
-      else if (error)
+      if (error)
         throw boost::system::system_error(error); // Some other error.
 
       std::cout << buf.data() << "\n";

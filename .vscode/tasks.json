@@ -17,10 +17,8 @@
       "windows": {
         "args": [
           "..",
-          "-G",
-          "MinGW Makefiles",
-          "-DCMAKE_LIBRARY_PATH='C:/MinGW/boost/lib/'",
-          "-DCMAKE_INCLUDE_PATH='C:/MinGW/boost/include/boost-1_72'"
+          "-DCMAKE_LIBRARY_PATH='C:/LLVM/extra/boost/lib'",
+          "-DCMAKE_INCLUDE_PATH='C:/LLVM/extra/boost/include/boost-1_72'"
         ]
       }
     },
@@ -34,7 +32,8 @@
         "command": "make"
       },
       "windows": {
-        "command": "mingw32-make"
+        "command": "cmake",
+        "args": ["--build", "."]
       },
       "dependsOn": ["cmake"],
       "group": {

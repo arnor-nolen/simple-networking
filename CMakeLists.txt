@@ -8,18 +8,18 @@ link_directories(${CMAKE_LIBRARY_PATH})
 # Find dependencies 
 
 # Set binary output directories
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 
-# For debugging
-add_compile_options(-g)
 
 # Set platform-specific stuff
 if (WIN32)
     # Add "-mwindows" flag for hiding the console
-    set(EXTRA_LINKER_FLAGS mingw32 ws2_32 mswsock)
+    set(EXTRA_LINKER_FLAGS ws2_32 mswsock)
 elseif(APPLE)
+    # For debugging
+    add_compile_options(-g)
     set(EXTRA_LINKER_FLAGS "")
 else()
     message(FATAL_ERROR "Currently, only WIN32 and APPLE architectures are officially supported. You need to link your libraries manually by editing CMakeLists.txt")
