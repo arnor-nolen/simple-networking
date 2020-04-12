@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     asio::connect(socket, endpoints);
 
     while (true) {
-      std::array<char, 128> buf;
+      std::array<char, 128> buf{""};
       error_code error;
       size_t len = socket.read_some(asio::buffer(buf), error);
 
