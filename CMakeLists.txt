@@ -15,14 +15,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 
 # Set platform-specific stuff
 if (WIN32)
-    # Add "-mwindows" flag for hiding the console
+    add_compile_options(/W4)
     set(EXTRA_LINKER_FLAGS ws2_32 mswsock)
 elseif(APPLE)
-    # For debugging
-    add_compile_options(-g)
+    add_compile_options(-g -Wall -Wextra -Wpedantic)
     set(EXTRA_LINKER_FLAGS "")
 else()
-    message(FATAL_ERROR "Currently, only WIN32 and APPLE architectures are officially supported. You need to link your libraries manually by editing CMakeLists.txt")
+    message(FATAL_ERROR "Currently, only MSVC and APPLE architectures are officially supported. You need to link your libraries manually by editing CMakeLists.txt")
 endif()
 
 add_executable (server src/server.cpp)
