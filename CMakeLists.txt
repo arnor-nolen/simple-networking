@@ -14,7 +14,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 
 
 # Set platform-specific stuff
-if (WIN32)
+if (MSVC)
     add_compile_options(/W4)
     set(EXTRA_LINKER_FLAGS ws2_32 mswsock)
 elseif(APPLE)
