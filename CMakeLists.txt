@@ -27,6 +27,6 @@ add_executable (server src/server.cpp)
 add_executable (client src/client.cpp)
 # Use c++17 standard
 target_compile_features(server PUBLIC cxx_std_17)
-target_link_libraries(server ${EXTRA_LINKER_FLAGS})
 target_compile_features(client PUBLIC cxx_std_17)
+target_link_libraries(server ${EXTRA_LINKER_FLAGS})
 target_link_libraries(client ${EXTRA_LINKER_FLAGS})

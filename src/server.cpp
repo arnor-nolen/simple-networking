@@ -50,16 +50,21 @@ struct connection : public chat_participant,
 
   void read() {
     // Read for connection end
+    auto self = shared_from_this();
     std::array<char, 128> buf{""};
     asio::async_read(socket_, asio::buffer(buf),
-                     std::bind(&connection::handle_read, shared_from_this(),
-                               std::placeholders::_1, std::placeholders::_2));
+                     [this, self](const error_code &error, const size_t &size) {
+                       connection::handle_read(error, size);
+                     });
   }
 
   void send(const std::string &message) {
-    asio::async_write(socket_, asio::buffer(message),
-                      std::bind(&connection::handle_write, shared_from_this(),
-                                std::placeholders::_1, std::placeholders::_2));
+    auto self = shared_from_this();
+    asio::async_write(
+        socket_, asio::buffer(message),
+        [this, self](const error_code &error, const size_t &size) {
+          connection::handle_read(error, size);
+        });
   }
 
 private:
@@ -97,16 +102,19 @@ struct server {
   void start_accept() {
     auto new_connection = connection::create(ioc_, chat_room_);
     acceptor_.async_accept(new_connection->socket(),
-                           std::bind(&server::handle_accept, this,
-                                     new_connection, std::placeholders::_1));
+                           [this, new_connection](const error_code &error) {
+                             server::handle_accept(new_connection, error);
+                           });
   }
 
-  void handle_accept(std::shared_ptr<connection> &new_connection,
+  void handle_accept(const std::shared_ptr<connection> &new_connection,
                      const error_code &error) {
     if (!error) {
       std::cout << "Connection accepted!\n";
       chat_room_.join(new_connection);
       new_connection->read();
+    } else {
+      std::cerr << "Error: " << error.message() << "\n";
     }
     start_accept();
   }
