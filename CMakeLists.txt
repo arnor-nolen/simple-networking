@@ -5,17 +5,16 @@ project(simple-networking)
 include_directories(${CMAKE_INCLUDE_PATH})
 link_directories(${CMAKE_LIBRARY_PATH})
 
-# Find dependencies 
-
 # Set binary output directories
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 
-
 # Set platform-specific stuff
 if (MSVC)
     add_compile_options(/W4)
+    # We're targeting Windows 10 only, to suppress Boost.Asio warning
+    add_definitions(-D _WIN32_WINNT=0x0A00)
     set(EXTRA_LINKER_FLAGS "")
 elseif(APPLE)
     add_compile_options(-g -Wall -Wextra -Wpedantic)

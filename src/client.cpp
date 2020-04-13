@@ -10,27 +10,27 @@ using error_code = boost::system::error_code;
 
 int main(int argc, char *argv[]) {
   try {
-
     const std::string host = "localhost";
     const short port = 13;
 
     asio::io_context ioc;
     tcp::resolver resolver(ioc);
     auto endpoints = resolver.resolve(host, std::to_string(port));
+
     tcp::socket socket(ioc);
     asio::connect(socket, endpoints);
 
     while (true) {
       std::array<char, 128> buf{""};
       error_code error;
-      size_t len = socket.read_some(asio::buffer(buf), error);
+      socket.read_some(asio::buffer(buf), error);
 
-      if (error == boost::asio::error::eof)
+      if (error == asio::error::eof)
         break; // Connection closed cleanly by peer.
       if (error)
         throw boost::system::system_error(error); // Some other error.
 
-      std::cout << buf.data() << "\n";
+      std::cout << buf.data();
     }
   } catch (std::exception &e) {
     std::cerr << "Exception: " << e.what() << "\n";

@@ -1,2 +1,3 @@
 # simple-networking
-Simple networking using Boost.Asio and Boost.Beast
+
+Simple client-server chat application using Boost.Asio
