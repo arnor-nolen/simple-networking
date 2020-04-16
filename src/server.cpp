@@ -1,7 +1,10 @@
 #include <boost/asio.hpp>
+#include <boost/program_options.hpp>
 #include <iostream>
 #include <set>
+#include <string>
 
+namespace po = boost::program_options;
 namespace asio = boost::asio;
 using tcp = asio::ip::tcp;
 using error_code = boost::system::error_code;
@@ -127,7 +130,26 @@ private:
 
 int main(int argc, char *argv[]) {
   try {
-    const short port = 13;
+    unsigned short port;
+
+    po::options_description generic("Generic options");
+    generic.add_options()("help,h", "show this message");
+
+    po::options_description config("Configuration");
+    config.add_options()("port,p",
+                         po::value<unsigned short>(&port)->default_value(13),
+                         "working port");
+
+    po::variables_map vm;
+    po::options_description cmdline_options = generic.add(config);
+    po::store(po::parse_command_line(argc, argv, cmdline_options), vm);
+
+    if (vm.count("help")) {
+      std::cout << cmdline_options;
+      return 0;
+    }
+
+    po::notify(vm);
 
     asio::io_context ioc;
     tcp::endpoint endpoint(tcp::v4(), port);
