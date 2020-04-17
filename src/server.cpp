@@ -28,6 +28,8 @@ struct chat_room {
 
   void leave(const std::shared_ptr<chat_participant> &cp) {
     participants_.erase(cp);
+    messages_.emplace_back("User disconnected, " +
+                           std::to_string(participants_.size()) + " left!\n");
   }
 
   void send(const std::string &message) {
@@ -52,9 +54,7 @@ struct connection : public chat_participant,
   tcp::socket &socket() { return socket_; }
 
   void read() {
-    // Read for connection end
     auto self = shared_from_this();
-    std::array<char, 128> buf{""};
     asio::async_read(socket_, asio::buffer(buf),
                      [this, self](const error_code &error, const size_t &size) {
                        connection::handle_read(error, size);
@@ -66,7 +66,7 @@ struct connection : public chat_participant,
     asio::async_write(
         socket_, asio::buffer(message),
         [this, self](const error_code &error, const size_t &size) {
-          connection::handle_read(error, size);
+          connection::handle_write(error, size);
         });
   }
 
@@ -75,10 +75,10 @@ private:
       : socket_(ioc), chat_room_(room) {}
 
   void handle_read(const error_code &error, const size_t &) {
-    if (!error)
+    if (!error) {
       std::cout << "Message read!\n";
-    else if (error == asio::error::connection_reset ||
-             error == asio::error::eof)
+    } else if (error == asio::error::connection_reset ||
+               error == asio::error::eof)
       chat_room_.leave(shared_from_this());
     else
       std::cerr << "Error: " << error.message() << "\n";
@@ -92,6 +92,7 @@ private:
   }
 
   tcp::socket socket_;
+  std::array<char, 128> buf{""};
   chat_room &chat_room_;
 };
 
