@@ -6,7 +6,7 @@
         "${workspaceFolder}/**",
         "C:/LLVM/extra/boost/include/boost-1_72"
       ],
-      "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
+      "defines": ["UNICODE", "_UNICODE"],
       "cStandard": "c11",
       "cppStandard": "c++17",
       "intelliSenseMode": "msvc-x64"

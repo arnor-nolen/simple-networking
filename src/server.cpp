@@ -82,7 +82,9 @@ private:
   void handle_read(const error_code &error, const size_t &size) {
     if (!error) {
       std::cout << "Message read!\n";
-      std::string message(buf_.data(), size);
+      // Doesn't work on Windows with short strings, works fine with large
+      // strings!
+      std::string message = buf_.data();
       chat_room_.add_message(message);
       read();
     } else if (error == asio::error::connection_reset ||
