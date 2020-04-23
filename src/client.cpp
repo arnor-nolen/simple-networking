@@ -13,7 +13,7 @@ using error_code = boost::system::error_code;
 struct client {
   client(asio::io_context &ioc, const tcp::resolver::results_type &endpoints,
          const std::string &nickname)
-      : ioc_(ioc), socket_(ioc), nickname_(nickname) {
+      : socket_(ioc), nickname_(nickname) {
     connect(endpoints);
   }
 
@@ -67,7 +67,6 @@ private:
       std::cerr << "Error: " << error.message() << "\n";
   }
 
-  asio::io_context &ioc_;
   tcp::socket socket_;
   std::array<char, 128> buf_{""};
   std::string nickname_;
