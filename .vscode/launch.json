@@ -8,8 +8,7 @@
       "program": "${workspaceFolder}/bin/server",
       "terminal": "external",
       "args": [],
-      "cwd": "${workspaceFolder}",
-      "preLaunchTask": "make"
+      "cwd": "${workspaceFolder}"
     }
   ]
 }

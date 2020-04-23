@@ -17,23 +17,27 @@ struct chat_participant {
 struct chat_room {
   chat_room() {}
 
+  void add_message(const std::string &message) {
+    messages_.emplace_back(message);
+    send(messages_.back());
+  }
+
   void join(const std::shared_ptr<chat_participant> &cp) {
     participants_.insert(cp);
-    messages_.emplace_back("New user connected, total of " +
-                           std::to_string(participants_.size()) + "!\n");
     for (const auto &i : messages_) {
       cp->send(i);
     }
+    add_message("New user connected, total of " +
+                std::to_string(participants_.size()) + "!\n");
   }
 
   void leave(const std::shared_ptr<chat_participant> &cp) {
     participants_.erase(cp);
-    messages_.emplace_back("User disconnected, " +
-                           std::to_string(participants_.size()) + " left!\n");
+    add_message("User disconnected, " + std::to_string(participants_.size()) +
+                " left!\n");
   }
 
   void send(const std::string &message) {
-    std::cout << participants_.size() << '\n';
     for (auto &c : participants_) {
       c->send(message);
     }
@@ -41,7 +45,7 @@ struct chat_room {
 
 private:
   std::set<std::shared_ptr<chat_participant>> participants_;
-  std::vector<std::string> messages_;
+  std::vector<std::string> messages_{"Default message\n"};
 };
 
 struct connection : public chat_participant,
@@ -55,10 +59,11 @@ struct connection : public chat_participant,
 
   void read() {
     auto self = shared_from_this();
-    asio::async_read(socket_, asio::buffer(buf),
-                     [this, self](const error_code &error, const size_t &size) {
-                       connection::handle_read(error, size);
-                     });
+    socket_.async_read_some(
+        asio::buffer(buf_),
+        [this, self](const error_code &error, const size_t &size) {
+          connection::handle_read(error, size);
+        });
   }
 
   void send(const std::string &message) {
@@ -74,9 +79,12 @@ private:
   connection(asio::io_context &ioc, chat_room &room)
       : socket_(ioc), chat_room_(room) {}
 
-  void handle_read(const error_code &error, const size_t &) {
+  void handle_read(const error_code &error, const size_t &size) {
     if (!error) {
       std::cout << "Message read!\n";
+      std::string message(buf_.data(), size);
+      chat_room_.add_message(message);
+      read();
     } else if (error == asio::error::connection_reset ||
                error == asio::error::eof)
       chat_room_.leave(shared_from_this());
@@ -92,7 +100,7 @@ private:
   }
 
   tcp::socket socket_;
-  std::array<char, 128> buf{""};
+  std::array<char, 128> buf_{""};
   chat_room &chat_room_;
 };
 
@@ -115,8 +123,8 @@ struct server {
                      const error_code &error) {
     if (!error) {
       std::cout << "Connection accepted!\n";
-      chat_room_.join(new_connection);
       new_connection->read();
+      chat_room_.join(new_connection);
     } else {
       std::cerr << "Error: " << error.message() << "\n";
     }
