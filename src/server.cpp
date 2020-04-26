@@ -45,7 +45,7 @@ struct chat_room {
 
 private:
   std::set<std::shared_ptr<chat_participant>> participants_;
-  std::vector<std::string> messages_{"Default message\n"};
+  std::vector<std::string> messages_{"Welcome to our chat room!\n"};
 };
 
 struct connection : public chat_participant,
@@ -79,28 +79,30 @@ private:
   connection(asio::io_context &ioc, chat_room &room)
       : socket_(ioc), chat_room_(room) {}
 
-  void handle_read(const error_code &error, const size_t &size) {
+  void handle_read(const error_code &error, const size_t &) {
     if (!error) {
-      std::cout << "Message read!\n";
-      // Doesn't work on Windows with short strings, works fine with large
-      // strings!
-      std::string message = buf_.data();
-      chat_room_.add_message(message);
+      if (nickname_ == "") {
+        nickname_ = buf_.data();
+      } else {
+        std::string message = nickname_ + ": " + buf_.data() + '\n';
+        chat_room_.add_message(message);
+      }
+      buf_.fill('\0');
       read();
     } else if (error == asio::error::connection_reset ||
                error == asio::error::eof)
-      chat_room_.leave(shared_from_this());
+      chat_room_.leave(
+          std::static_pointer_cast<chat_participant>(shared_from_this()));
     else
       std::cerr << "Error: " << error.message() << "\n";
   }
 
   void handle_write(const error_code &error, const size_t &) {
-    if (!error)
-      std::cout << "Message sent!\n";
-    else
+    if (error)
       std::cerr << "Error: " << error.message() << "\n";
   }
 
+  std::string nickname_{""};
   tcp::socket socket_;
   std::array<char, 128> buf_{""};
   chat_room &chat_room_;

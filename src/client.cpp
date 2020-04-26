@@ -2,6 +2,7 @@
 #include <boost/asio.hpp>
 #include <boost/program_options.hpp>
 #include <boost/system/error_code.hpp>
+#include <future>
 #include <iostream>
 #include <string>
 
@@ -56,14 +57,13 @@ private:
       read();
     } else if (error == asio::error::eof)
       ; // silently shut down
-    else
+    else {
       std::cerr << "Error: " << error.message() << "\n";
+    }
   }
 
   void handle_write(const error_code &error, const size_t &) {
-    if (!error)
-      std::cout << "Message sent!\n";
-    else
+    if (error)
       std::cerr << "Error: " << error.message() << "\n";
   }
 
@@ -72,23 +72,33 @@ private:
   std::string nickname_;
 };
 
+void console_read(client &c) {
+  std::string message;
+  std::getline(std::cin, message);
+  c.send(message);
+  console_read(c);
+}
+
 int main(int argc, char *argv[]) {
   try {
     std::string host;
     unsigned short port;
     std::string nickname;
+    bool read_only;
 
     po::options_description generic("Generic options");
-    generic.add_options()("help,h", "show this message");
+    generic.add_options()("help", "show this message");
 
     po::options_description config("Configuration");
     config.add_options()(
-        "host", po::value<std::string>(&host)->default_value("localhost"),
+        "host,h", po::value<std::string>(&host)->default_value("localhost"),
         "server ip address")(
         "port,p", po::value<unsigned short>(&port)->default_value(13),
-        "connection port")(
-        "name,n", po::value<std::string>(&nickname)->default_value("User\n"),
-        "your nickname");
+        "connection port")("name,n",
+                           po::value<std::string>(&nickname)->required(),
+                           "your nickname")(
+        "read-only,r", po::bool_switch(&read_only)->default_value(false),
+        "read-only mode");
 
     po::variables_map vm;
     po::options_description cmdline_options = generic.add(config);
@@ -106,6 +116,13 @@ int main(int argc, char *argv[]) {
     auto endpoints = resolver.resolve(host, std::to_string(port));
 
     client c(ioc, endpoints, nickname);
+
+    std::future<void> input_promise;
+
+    if (!read_only) {
+      input_promise =
+          std::async(std::launch::async, [&c]() { console_read(c); });
+    }
 
     ioc.run();
 
