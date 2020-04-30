@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.16)
 project(simple-networking)
 
 # Include and library paths
@@ -25,6 +25,8 @@ endif()
 
 add_executable (server src/server.cpp)
 add_executable (client src/client.cpp)
+target_precompile_headers(server PUBLIC src/pch.h)
+target_precompile_headers(client PUBLIC src/pch.h)
 # Use c++17 standard
 target_compile_features(server PUBLIC cxx_std_17)
 target_compile_features(client PUBLIC cxx_std_17)
