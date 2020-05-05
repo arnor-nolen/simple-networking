@@ -8,13 +8,13 @@ using error_code = boost::system::error_code;
 
 struct chat_participant {
   virtual ~chat_participant() {}
-  virtual void send(std::string_view) = 0;
+  virtual void send(const std::string_view &) = 0;
 };
 
 struct chat_room {
   chat_room() {}
 
-  void add_message(std::string_view message) {
+  void add_message(const std::string_view &message) {
     messages_.emplace_back(message);
     send(messages_.back());
   }
@@ -34,7 +34,7 @@ struct chat_room {
                 " left!\n");
   }
 
-  void send(std::string_view message) {
+  void send(const std::string_view &message) {
     for (auto &c : participants_) {
       c->send(message);
     }
@@ -63,7 +63,7 @@ struct connection : public chat_participant,
         });
   }
 
-  void send(std::string_view message) override {
+  void send(const std::string_view &message) override {
     auto self = shared_from_this();
     asio::async_write(
         socket_, asio::buffer(message),

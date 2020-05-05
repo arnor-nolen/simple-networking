@@ -8,7 +8,7 @@ using error_code = boost::system::error_code;
 
 struct client {
   client(asio::io_context &ioc, const tcp::resolver::results_type &endpoints,
-         std::string_view nickname)
+         const std::string_view &nickname)
       : socket_(ioc), nickname_(nickname) {
     connect(endpoints);
   }
@@ -28,7 +28,7 @@ struct client {
     });
   }
 
-  void send(std::string_view message) {
+  void send(const std::string_view &message) {
     asio::async_write(socket_, asio::buffer(message),
                       [this](const error_code &error, const size_t &size) {
                         client::handle_write(error, size);
