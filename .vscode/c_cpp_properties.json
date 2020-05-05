@@ -10,10 +10,7 @@
     },
     {
       "name": "Mac",
-      "includePath": [
-        "${workspaceFolder}/**",
-        "/usr/local/Cellar/boost/1.72.0_1/include"
-      ],
+      "includePath": ["${workspaceFolder}/**", "~/.conan/data/**"],
       "defines": [],
       "macFrameworkPath": [
         "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"

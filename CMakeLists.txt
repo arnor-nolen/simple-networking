@@ -1,10 +1,8 @@
 cmake_minimum_required (VERSION 3.16)
 project(simple-networking)
 
-# Set binary output directories
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
+# Save PROJECT_SOURCE_DIR because Conan modifies it
+set(BACKUP_PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 
 # Downloading cmake-conan script 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
@@ -26,18 +24,25 @@ conan_cmake_run(
   boost/1.73.0
   BASIC_SETUP
   CMAKE_TARGETS
+  BUILD_TYPE "None"
   BUILD
   missing)
+
+# Restore variable from the backup
+set(PROJECT_SOURCE_DIR ${BACKUP_PROJECT_SOURCE_DIR})
+
+# Set binary output directories
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 
 # Set platform-specific stuff
 if (MSVC)
     add_compile_options(/W4)
     # We're targeting Windows 10 only, to suppress Boost.Asio warning
     add_definitions(-D _WIN32_WINNT=0x0A00)
-    # set(EXTRA_LINKER_FLAGS "")
 elseif(APPLE)
-    add_compile_options(-g -Wall -Wextra -Wpedantic -Wshadow)
-    # set(EXTRA_LINKER_FLAGS boost_program_options-mt)
+    add_compile_options(-g -O3 -Wall -Wextra -Wpedantic -Wshadow -fvisibility=hidden)
 else()
     message(FATAL_ERROR "Currently, only MSVC and APPLE architectures are officially supported. You need to link your libraries manually by editing CMakeLists.txt")
 endif()
