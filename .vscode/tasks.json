@@ -7,20 +7,7 @@
         "cwd": "${workspaceRoot}/build"
       },
       "command": "cmake",
-      "osx": {
-        "args": [
-          "..",
-          "-DCMAKE_LIBRARY_PATH='/usr/local/Cellar/boost/1.72.0_1/lib'",
-          "-DCMAKE_INCLUDE_PATH='/usr/local/Cellar/boost/1.72.0_1/include'"
-        ]
-      },
-      "windows": {
-        "args": [
-          "..",
-          "-DCMAKE_LIBRARY_PATH='C:/LLVM/extra/boost/lib'",
-          "-DCMAKE_INCLUDE_PATH='C:/LLVM/extra/boost/include/boost-1_72'"
-        ]
-      }
+      "args": [".."]
     },
     {
       "type": "shell",
@@ -28,13 +15,8 @@
       "options": {
         "cwd": "${workspaceRoot}/build"
       },
-      "osx": {
-        "command": "make"
-      },
-      "windows": {
-        "command": "cmake",
-        "args": ["--build", "."]
-      },
+      "command": "cmake",
+      "args": ["--build", "."],
       "dependsOn": ["cmake"],
       "group": {
         "kind": "build",

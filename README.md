@@ -9,14 +9,15 @@ Simple client-server chat application using Boost.Asio. Currently, only handles 
 
 ### Compilation info
 
-Compilation is done using CMake. Since I only have access to Windows and MacOS platforms, Linux **is not** officially supported. That said, feel free to modify [CMakeLists.txt](/CMakeLists.txt) to add Linux support (most likely, _APPLE_ config would work just fine). You can find an example of my VS Code compilation setup in [here](/.vscode/tasks.json).
+Compilation is done using CMake. Since I only have access to Windows and MacOS platforms, Linux **is not** officially supported. That said, feel free to modify [CMakeLists.txt](/CMakeLists.txt) to add Linux support (most likely, _APPLE_ config would work just fine).
 
-In short, you need to pass paths to required include and lib folders to CMake (listed in dependencies), so compilation process would look something like this:
+To compile, you need to install Conan package manager first. After that, just use CMake to generate the appropriate build files. Simple compilation setup would look something like this:
 
 ```
+pip install conan
 cd build
-cmake .. -DCMAKE_LIBRARY_PATH='$lib_folder' -DCMAKE_INCLUDE_PATH='$include_folder'
-cmake --build . --config Release
+cmake ..
+cmake --build .
 ```
 
 Now, enjoy your freshly minted binaries inside [bin](/bin) folder!
