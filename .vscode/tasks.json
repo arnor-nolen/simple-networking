@@ -33,7 +33,7 @@
       },
       "windows": {
         "command": "cmake",
-        "args": ["--build", ".", "--config", "Release"]
+        "args": ["--build", "."]
       },
       "dependsOn": ["cmake"],
       "group": {

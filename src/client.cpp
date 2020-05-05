@@ -8,7 +8,7 @@ using error_code = boost::system::error_code;
 
 struct client {
   client(asio::io_context &ioc, const tcp::resolver::results_type &endpoints,
-         const std::string &nickname)
+         std::string_view nickname)
       : socket_(ioc), nickname_(nickname) {
     connect(endpoints);
   }
@@ -28,7 +28,7 @@ struct client {
     });
   }
 
-  void send(const std::string &message) {
+  void send(std::string_view message) {
     asio::async_write(socket_, asio::buffer(message),
                       [this](const error_code &error, const size_t &size) {
                         client::handle_write(error, size);
@@ -71,7 +71,6 @@ void console_read(client &c) {
   std::string message;
   std::getline(std::cin, message);
   c.send(message);
-  console_read(c);
 }
 
 int main(int argc, char *argv[]) {
@@ -115,8 +114,11 @@ int main(int argc, char *argv[]) {
     std::future<void> input_promise;
 
     if (!read_only) {
-      input_promise =
-          std::async(std::launch::async, [&c]() { console_read(c); });
+      input_promise = std::async(std::launch::async, [&c]() {
+        while (true) {
+          console_read(c);
+        }
+      });
     }
 
     ioc.run();
