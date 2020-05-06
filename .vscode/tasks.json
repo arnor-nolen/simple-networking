@@ -7,7 +7,12 @@
         "cwd": "${workspaceRoot}/build"
       },
       "command": "cmake",
-      "args": ["..", "-DCMAKE_BUILD_TYPE=Debug"]
+      "windows": {
+        "args": ["..", "-DCMAKE_BUILD_TYPE=Debug", "-D_WIN32_WINNT=0x0A00"]
+      },
+      "osx": {
+        "args": ["..", "-DCMAKE_BUILD_TYPE=Debug"]
+      }
     },
     {
       "type": "shell",

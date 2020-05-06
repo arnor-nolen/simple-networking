@@ -30,15 +30,18 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
 
+# Check if Windows version was supplied to suppress Boost.Asio warning
+if (_WIN32_WINNT)
+  add_definitions(-D _WIN32_WINNT=${_WIN32_WINNT})
+endif()
+
 # Set platform-specific stuff
 if (MSVC)
-    add_compile_options(/W4)
-    # We're targeting Windows 10 only, to suppress Boost.Asio warning
-    add_definitions(-D _WIN32_WINNT=0x0A00)
+  add_compile_options(/W4)
 elseif(APPLE)
-    add_compile_options(-g -O3 -Wall -Wextra -Wpedantic -Wshadow -fvisibility=hidden)
+  add_compile_options(-g -O3 -Wall -Wextra -Wpedantic -Wshadow -fvisibility=hidden)
 else()
-    message(FATAL_ERROR "Currently, only MSVC and APPLE architectures are officially supported. You need to link your libraries manually by editing CMakeLists.txt")
+  message(FATAL_ERROR "Currently, only MSVC and APPLE architectures are officially supported. You need to link your libraries manually by editing CMakeLists.txt")
 endif()
 
 add_executable (server src/server.cpp)
