@@ -2,7 +2,11 @@
   "configurations": [
     {
       "name": "Win32",
-      "includePath": ["${workspaceFolder}/**", "c:/.conan/**"],
+      "includePath": [
+        "${workspaceFolder}/**",
+        "~/.conan/data/**",
+        "c:/.conan/**"
+      ],
       "defines": ["UNICODE", "_UNICODE"],
       "cStandard": "c11",
       "cppStandard": "c++17",
