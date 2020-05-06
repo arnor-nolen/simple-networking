@@ -1,9 +1,6 @@
 cmake_minimum_required (VERSION 3.16)
 project(simple-networking)
 
-# Save PROJECT_SOURCE_DIR because Conan modifies it
-set(BACKUP_PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR})
-
 # Downloading cmake-conan script 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
   message(
@@ -24,12 +21,9 @@ conan_cmake_run(
   boost/1.73.0
   BASIC_SETUP
   CMAKE_TARGETS
-  BUILD_TYPE "None"
+  NO_OUTPUT_DIRS
   BUILD
   missing)
-
-# Restore variable from the backup
-set(PROJECT_SOURCE_DIR ${BACKUP_PROJECT_SOURCE_DIR})
 
 # Set binary output directories
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/$<0:>)
@@ -49,10 +43,13 @@ endif()
 
 add_executable (server src/server.cpp)
 add_executable (client src/client.cpp)
+
 target_precompile_headers(server PUBLIC src/pch.h)
 target_precompile_headers(client PUBLIC src/pch.h)
+
 # Use c++17 standard
 target_compile_features(server PUBLIC cxx_std_17)
 target_compile_features(client PUBLIC cxx_std_17)
+
 target_link_libraries(server CONAN_PKG::boost)
 target_link_libraries(client CONAN_PKG::boost)
